@@ -4,6 +4,7 @@ import 'package:grad_gg/login_screen.dart';
 import 'package:grad_gg/main_page.dart';
 
 void main() async {
+  //initailzied Firebase App
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());

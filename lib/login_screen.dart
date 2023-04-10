@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:grad_gg/profile_screen.dart';
+import 'package:grad_gg/forgotpassword_screen.dart';
 import 'package:grad_gg/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,58 +11,76 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //파이어베이스초기화
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }
+  // //파이어베이스초기화
+  // Future<FirebaseApp> _initializeFirebase() async {
+  //   FirebaseApp firebaseApp = await Firebase.initializeApp();
+  //   return firebaseApp;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _initializeFirebase(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return const LoginPage();
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
+      body: LoginPage(),
+      // FutureBuilder(
+      //   future: _initializeFirebase(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.done) {
+      //       return const LoginPage();
+      //     }
+      //     return const Center(
+      //       child: CircularProgressIndicator(),
+      //     );
+      //   },
+      // ),
     );
   }
 }
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({
+  LoginPage({
     super.key,
   });
 
-  static Future<User?> loginUsingEmailPassword({
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
+  Future signIn() async {
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
-      user = userCredential.user;
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
-        print("No user found for that email");
-      }
+        print("user not found in");
+      } else if (e.code == "invalid-email") {
+      } else if (e.code == "user-disabled") {}
     }
-    return user;
   }
+
+  // static Future<User?> loginUsingEmailPassword({
+  //   required String email,
+  //   required String password,
+  //   required BuildContext context,
+  // }) async {
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   User? user;
+  //   try {
+  //     UserCredential userCredential = await auth.signInWithEmailAndPassword(
+  //         email: email.trim(), password: password.trim());
+  //     user = userCredential.user;
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == "user-not-found") {
+  //       print("No user found for that email");
+  //     }
+  //   }
+  //   return user;
+  // }
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+    // TextEditingController emailController = TextEditingController();
+    // TextEditingController passwordController = TextEditingController();
 
     return SingleChildScrollView(
       child: Padding(
@@ -109,7 +126,7 @@ class LoginPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextField(
-                controller: emailController,
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -129,11 +146,11 @@ class LoginPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextField(
-                controller: passwordController,
+                controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
-                  hintText: "User Password",
+                  hintText: "Password",
                   prefixIcon: Icon(
                     Icons.lock,
                     color: Colors.black,
@@ -145,23 +162,20 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: () async {
-                      User? user = await loginUsingEmailPassword(
-                          email: emailController.text,
-                          password: passwordController.text,
-                          context: context);
-                      if (user != null) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const ProfileScreen()));
-                      }
-                    },
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                      ),
-                    )),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) =>
+                                const ForgotPasswordScreen())));
+                  },
+                  child: const Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -176,11 +190,42 @@ class LoginPage extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                )
+                ),
               ],
             ),
             const SizedBox(
-              height: 100,
+              height: 60,
+            ),
+            Container(
+              width: 280,
+              decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 82, 77, 77),
+                  borderRadius: BorderRadius.circular(20)),
+              child: TextButton(
+                onPressed: () {
+                  signIn();
+                  // User? user = await loginUsingEmailPassword(
+                  //     email: emailController.text,
+                  //     password: passwordController.text,
+                  //     context: context);
+                  // print(user);
+                  // if (user != null) {
+                  //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //       builder: (context) => const ProfileScreen()));
+                  // } else {
+                  // }
+                },
+                child: const Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 40,
             ),
             RichText(
               text: const TextSpan(
