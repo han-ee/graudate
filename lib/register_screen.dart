@@ -80,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Grad.gg',
+                        '졸업.gg',
                         style: TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.w600,

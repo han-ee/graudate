@@ -96,7 +96,7 @@ class LoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Grad.gg',
+                      '졸업.gg',
                       style: TextStyle(
                         fontSize: 50,
                         fontWeight: FontWeight.w600,
