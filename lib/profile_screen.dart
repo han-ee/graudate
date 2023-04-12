@@ -24,8 +24,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           IconButton(
               onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushReplacementNamed(context, '/second');
+                setState(() {
+                  FirebaseAuth.instance.signOut();
+                  print("로그아웃후 $user");
+                });
+                //Navigator.pushReplacementNamed(context, '/loginPage');
               },
               icon: const Icon(
                 Icons.logout_outlined,
