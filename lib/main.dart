@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/login_screen.dart';
 import 'package:grad_gg/main_page.dart';
+import 'package:grad_gg/profile_screen.dart';
 
 void main() async {
   //initailzied Firebase App
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: const MainPage(),
       routes: {
-        '/second': (context) => const LoginScreen(),
+        '/loginPage': (context) => const LoginScreen(),
+        '/profilePage': (context) => const ProfileScreen(),
       },
     );
   }
