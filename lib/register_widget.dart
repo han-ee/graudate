@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grad_gg/register_screen.dart';
+import 'package:grad_gg/screen/register_screen.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
