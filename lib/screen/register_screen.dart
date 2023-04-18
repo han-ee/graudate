@@ -15,9 +15,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   final _nameController = TextEditingController();
   final _schoolController = TextEditingController();
+  late final bool _makeAccountState;
 
   // final _valueList = ['경상대학교', 'XX대학교', 'OO대학교'];
   // final String _selectedValue = '경상대학교';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _makeAccountState = true;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -30,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void alertDialog() {
+  alertDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -67,13 +75,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print("계정생성 성공!");
 
       // checking login
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user == null) {
-          print('User is currently signed out!');
-        } else {
-          print('User is signed in!');
-        }
-      });
+      FirebaseAuth.instance.authStateChanges().listen(
+        (User? user) {
+          if (user == null) {
+            print('User is currently signed out!');
+          } else {
+            print('User is signed in!');
+          }
+        },
+      );
       //getting userUid
       String userUid = getUserUid();
 
@@ -85,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         userUid.trim(),
       );
       print("계정등록 완료!");
-
+      _makeAccountState = false;
       //const ProfileScreen();
     } else {
       alertDialog();
@@ -117,7 +127,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool passwordConfirmed() {
     if (_passwordController.text.trim() ==
-        _confirmPasswordController.text.trim()) {
+            _confirmPasswordController.text.trim() &&
+        _passwordController.text != '') {
       return true;
     } else {
       return false;
@@ -141,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Grad.gg',
+                        '졸업.gg',
                         style: TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.w600,
@@ -304,7 +315,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextButton(
                     onPressed: () {
                       signUp();
-                      Navigator.pop(context);
+                      if (!_makeAccountState) {
+                        Navigator.pop(context);
+                      }
+                      //Navigator.pop(context);
                     },
                     child: const Text(
                       'Register',
@@ -319,24 +333,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(
                 height: 70,
               ),
-              RichText(
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'I\'M READY!',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 50,
-                        fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: () {
+                  signUp();
+                  if (!_makeAccountState) {
+                    Navigator.pop(context);
+                  }
+                  //Navigator.pop(context);
+                  print("눌러짐");
+                },
+                child: RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'I\'M READY! ➡️',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 50,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    WidgetSpan(
-                      child: Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 50,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

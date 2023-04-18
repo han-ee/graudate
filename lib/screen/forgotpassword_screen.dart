@@ -82,7 +82,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 height: 20,
               ),
               Container(
-                decoration: BoxDecoration(border: Border.all()),
+                decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(12)),
                 child: TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
