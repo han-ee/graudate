@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(const MySpaceScreen());
 
@@ -35,16 +36,33 @@ class MyCard extends StatefulWidget {
 class _MyCardState extends State<MyCard> {
   File? _image;
   final user = FirebaseAuth.instance.currentUser;
+  late SharedPreferences prefs;
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final imageFile = prefs.getString('imagePath');
+    if (imageFile != null) {
+      setState(() {
+        _image = File(imageFile);
+      });
+    } else {
+      await prefs.setString('imagePath', "");
+    }
+  }
 
   Future _pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
+      String? imageFile = prefs.getString('imagePath');
       File? img = File(image.path);
       setState(() {
         _image = img;
+        imageFile = image.path;
         Navigator.of(context).pop();
       });
+      //prefs에 선택한 이미지 파일 경로저장
+      await prefs.setString('imagePath', imageFile!);
     } on PlatformException catch (e) {
       print(e);
       Navigator.of(context).pop();
@@ -56,6 +74,13 @@ class _MyCardState extends State<MyCard> {
       _image = null;
       Navigator.of(context).pop();
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initPrefs();
   }
 
   @override
