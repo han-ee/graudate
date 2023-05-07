@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/main_page.dart';
 import 'package:grad_gg/screen/login_screen.dart';
+import 'package:grad_gg/screen/myspace_screen.dart';
 import 'package:grad_gg/screen/profile_screen.dart';
 
 void main() async {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/loginPage': (context) => const LoginScreen(),
         '/profilePage': (context) => const ProfileScreen(),
+        '/myspacePage': (context) => const MySpaceScreen(),
       },
     );
   }
