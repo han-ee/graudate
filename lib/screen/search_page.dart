@@ -9,7 +9,10 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  static List<SearchModel> main_search_list = [];
+  static List<SearchModel> main_search_list = [
+    SearchModel('apple'),
+    SearchModel("banana"),
+  ];
 
   List<SearchModel> display_list = List.from(main_search_list);
 
@@ -94,6 +97,16 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
               ),
+            ),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: ElevatedButton(
+                onPressed: () {
+                  print(display_list);
+                },
+                child: const Text("Print"),
+              ),
             )
           ],
         ),
@@ -103,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchItem = ['Apple'];
+  List<String> searchItem = ['Apple', 'banana', 'coloa'];
 
   @override
   List<Widget> buildActions(BuildContext context) {
