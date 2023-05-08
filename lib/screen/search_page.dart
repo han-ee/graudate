@@ -10,18 +10,24 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   static List<SearchModel> main_search_list = [
-    SearchModel('apple'),
-    SearchModel("banana"),
+    SearchModel('apple', 20),
+    SearchModel("banana", 20),
   ];
 
-  List<SearchModel> display_list = List.from(main_search_list);
+  static List<String> displayList2 = [
+    'apple',
+    'banana',
+    'orange',
+    'kiwi',
+  ];
+
+  List<String> displayList = List.from(displayList2);
 
   void updateList(String value) {
     setState(() {
-      display_list = main_search_list
-          .where(((element) => element.subject_title!
-              .toLowerCase()
-              .contains(value.toLowerCase())))
+      displayList = displayList2
+          .where(((element) =>
+              element.toLowerCase().contains(value.toLowerCase())))
           .toList();
     });
   }
@@ -61,7 +67,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/myspacePage');
+                      print(displayList2);
+                      //Navigator.pushReplacementNamed(context, '/myspacePage');
                     },
                     child: const Text("Myspace"),
                   ),
@@ -69,17 +76,19 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
             TextField(
+              onChanged: (value) => updateList(value),
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color.fromARGB(255, 0, 0, 0),
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide.none,
+                  borderSide: const BorderSide(color: Colors.black),
                 ),
-                hintText: "Search",
+                hintText: 'Search',
+                labelStyle: const TextStyle(color: Colors.white),
                 prefixIcon: const Icon(Icons.search),
-                prefixIconColor: Colors.white,
+                prefixIconColor: Colors.black,
               ),
             ),
             const SizedBox(
@@ -87,25 +96,19 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: display_list.length,
+                itemCount: displayList.length,
                 itemBuilder: (context, index) => ListTile(
                   contentPadding: const EdgeInsets.all(8.0),
                   title: Text(
-                    display_list[index].subject_title!,
+                    displayList[index],
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    displayList[index],
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 100,
-              width: 100,
-              child: ElevatedButton(
-                onPressed: () {
-                  print(display_list);
-                },
-                child: const Text("Print"),
               ),
             )
           ],

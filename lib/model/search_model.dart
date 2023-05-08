@@ -1,5 +1,6 @@
 class SearchModel {
-  String? subject_title;
+  String? subjectTitle;
+  int? uniAge;
 
-  SearchModel(this.subject_title);
+  SearchModel(this.subjectTitle, this.uniAge);
 }
