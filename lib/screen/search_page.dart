@@ -17,13 +17,40 @@ class _SearchScreenState extends State<SearchScreen> {
 
   final _searchController = TextEditingController();
   final db = FirebaseFirestore.instance;
+  static List<String> dbSchoolList = [];
+  late List<String> displayList = [];
 
-  void TestData() async {
-    final collRef = db.collection("학생");
+  void collectSearchList() async {
+    final collRef = db.collection("대학");
     final querySnapshot = await collRef.get();
     for (var doc in querySnapshot.docs) {
-      print(doc.data());
+      dbSchoolList.add(doc.id);
     }
+    setState(() {
+      displayList = List.from(dbSchoolList.toSet().toList());
+    });
+  }
+
+  void updateList(String value) {
+    setState(
+      () {
+        if (value.isEmpty) {
+          displayList = dbSchoolList;
+        } else {
+          displayList = dbSchoolList
+              .where(((element) =>
+                  element.toLowerCase().contains(value.toLowerCase())))
+              .toList();
+        }
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    collectSearchList();
+    super.initState();
   }
 
   @override
@@ -33,35 +60,16 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  static List<String> displayList2 = [
-    'apple',
-    'banana',
-    'orange',
-    'kiwi',
-    '멍청이',
-  ];
-
-  List<String> displayList = List.from(displayList2);
-
-  void updateList(String value) {
-    setState(() {
-      displayList = displayList2
-          .where(((element) =>
-              element.toLowerCase().contains(value.toLowerCase())))
-          .toList();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: [
         IconButton(
           onPressed: () {
-            showSearch(
-              context: context,
-              delegate: CustomSearchDelegate(),
-            );
+            // showSearch(
+            //   context: context,
+            //   delegate: CustomSearchDelegate(),
+            // );
           },
           icon: const Icon(Icons.search),
         ),
@@ -87,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      TestData();
+                      collectSearchList();
                       //Navigator.pushReplacementNamed(context, '/myspacePage');
                     },
                     child: const Text("Myspace"),
@@ -119,18 +127,19 @@ class _SearchScreenState extends State<SearchScreen> {
               child: displayList.isEmpty
                   ? const Center(
                       child: Text(
-                        "Now result found",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                      "No Result",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )
+                    ))
                   : ListView.builder(
                       itemCount: displayList.length,
                       itemBuilder: (context, index) => ListTile(
                         onTap: () {
-                          setState(() {});
+                          setState(() {
+                            _searchController.text = displayList[index];
+                          });
                         },
                         contentPadding: const EdgeInsets.all(8.0),
                         title: Text(
@@ -138,10 +147,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           style: const TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(
-                          displayList[index],
-                          style: const TextStyle(color: Colors.black),
-                        ),
+                        // subtitle: Text(
+                        //   displayList[index],
+                        //   style: const TextStyle(color: Colors.black),
+                        // ),
                       ),
                     ),
             ),
@@ -152,65 +161,65 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchItem = ['Apple', 'banana', 'coloa'];
+// class CustomSearchDelegate extends SearchDelegate {
+//   List<String> searchItem = ['Apple', 'banana', 'coloa'];
 
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      )
-    ];
-  }
+//   @override
+//   List<Widget> buildActions(BuildContext context) {
+//     return [
+//       IconButton(
+//         icon: const Icon(Icons.clear),
+//         onPressed: () {
+//           query = '';
+//         },
+//       )
+//     ];
+//   }
 
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          close(context, null);
-        },
-        icon: const Icon(Icons.arrow_back));
-  }
+//   @override
+//   Widget buildLeading(BuildContext context) {
+//     return IconButton(
+//         onPressed: () {
+//           close(context, null);
+//         },
+//         icon: const Icon(Icons.arrow_back));
+//   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var item in searchItem) {
-      if (item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
-  }
+//   @override
+//   Widget buildResults(BuildContext context) {
+//     List<String> matchQuery = [];
+//     for (var item in searchItem) {
+//       if (item.toLowerCase().contains(query.toLowerCase())) {
+//         matchQuery.add(item);
+//       }
+//     }
+//     return ListView.builder(
+//       itemCount: matchQuery.length,
+//       itemBuilder: (context, index) {
+//         var result = matchQuery[index];
+//         return ListTile(
+//           title: Text(result),
+//         );
+//       },
+//     );
+//   }
 
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var item in searchItem) {
-      if (item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
-  }
-}
+//   @override
+//   Widget buildSuggestions(BuildContext context) {
+//     List<String> matchQuery = [];
+//     for (var item in searchItem) {
+//       if (item.toLowerCase().contains(query.toLowerCase())) {
+//         matchQuery.add(item);
+//       }
+//     }
+//     return ListView.builder(
+//       itemCount: matchQuery.length,
+//       itemBuilder: (context, index) {
+//         var result = matchQuery[index];
+//         return ListTile(
+//           title: Text(result),
+//         );
+//       },
+//     );
+//   }
+// }
