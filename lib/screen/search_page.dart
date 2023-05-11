@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/model/search_model.dart';
 
@@ -14,11 +15,30 @@ class _SearchScreenState extends State<SearchScreen> {
     SearchModel("banana", 20),
   ];
 
+  final _searchController = TextEditingController();
+  final db = FirebaseFirestore.instance;
+
+  void TestData() async {
+    final collRef = db.collection("학생");
+    final querySnapshot = await collRef.get();
+    for (var doc in querySnapshot.docs) {
+      print(doc.data());
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _searchController;
+    super.dispose();
+  }
+
   static List<String> displayList2 = [
     'apple',
     'banana',
     'orange',
     'kiwi',
+    '멍청이',
   ];
 
   List<String> displayList = List.from(displayList2);
@@ -67,7 +87,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      print(displayList2);
+                      TestData();
                       //Navigator.pushReplacementNamed(context, '/myspacePage');
                     },
                     child: const Text("Myspace"),
@@ -76,8 +96,9 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
             TextField(
+              controller: _searchController,
               onChanged: (value) => updateList(value),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -86,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   borderSide: const BorderSide(color: Colors.black),
                 ),
                 hintText: 'Search',
-                labelStyle: const TextStyle(color: Colors.white),
+                labelStyle: const TextStyle(color: Colors.black),
                 prefixIcon: const Icon(Icons.search),
                 prefixIconColor: Colors.black,
               ),
@@ -95,22 +116,35 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 20.0,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: displayList.length,
-                itemBuilder: (context, index) => ListTile(
-                  contentPadding: const EdgeInsets.all(8.0),
-                  title: Text(
-                    displayList[index],
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    displayList[index],
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            )
+              child: displayList.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "Now result found",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: displayList.length,
+                      itemBuilder: (context, index) => ListTile(
+                        onTap: () {
+                          setState(() {});
+                        },
+                        contentPadding: const EdgeInsets.all(8.0),
+                        title: Text(
+                          displayList[index],
+                          style: const TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          displayList[index],
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+            ),
           ],
         ),
       ),
