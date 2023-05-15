@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/model/search_model.dart';
+import 'package:grad_gg/screen/select_college_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -26,9 +27,11 @@ class _SearchScreenState extends State<SearchScreen> {
     for (var doc in querySnapshot.docs) {
       dbSchoolList.add(doc.id);
     }
-    setState(() {
-      displayList = List.from(dbSchoolList.toSet().toList());
-    });
+    setState(
+      () {
+        displayList = List.from(dbSchoolList.toSet().toList());
+      },
+    );
   }
 
   void updateList(String value) {
@@ -78,30 +81,35 @@ class _SearchScreenState extends State<SearchScreen> {
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         child: Column(
           children: [
-            Row(
-              children: [
-                const Text(
-                  '졸업.GG',
-                  style: TextStyle(
-                    //글자 스타일
-                    color: Colors.black, //글자 색 설정
-                    letterSpacing: 2.0, //글자 자간설정
-                    fontSize: 70.0, //폰트크기설정
-                    fontWeight: FontWeight.w900, //두께설정
+            Container(
+              color: Colors.orange,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '졸업.GG',
+                    style: TextStyle(
+                      //글자 스타일
+                      color: Colors.black, //글자 색 설정
+                      letterSpacing: 2.0, //글자 자간설정
+                      fontSize: 70.0, //폰트크기설정
+                      fontWeight: FontWeight.w700, //두께설정
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      collectSearchList();
-                      //Navigator.pushReplacementNamed(context, '/myspacePage');
-                    },
-                    child: const Text("Myspace"),
+                  SizedBox(
+                    width: 90,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        collectSearchList();
+                        //Navigator.pushReplacementNamed(context, '/myspacePage');
+                      },
+                      child: const Text("Myspace"),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             TextField(
               controller: _searchController,
@@ -137,9 +145,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       itemCount: displayList.length,
                       itemBuilder: (context, index) => ListTile(
                         onTap: () {
-                          setState(() {
-                            _searchController.text = displayList[index];
-                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SelectCollegeScreen(
+                                displayList[index],
+                              ),
+                            ),
+                          );
                         },
                         contentPadding: const EdgeInsets.all(8.0),
                         title: Text(
