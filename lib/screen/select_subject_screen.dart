@@ -1,39 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grad_gg/screen/select_subject_screen.dart';
 
-class SelectCollegeScreen extends StatefulWidget {
-  final String schoolId;
-  const SelectCollegeScreen(this.schoolId, {super.key});
+class SelectSubjectScreen extends StatefulWidget {
+  final String subjectid;
+  final String inputRoute;
+  const SelectSubjectScreen(this.subjectid, this.inputRoute, {super.key});
 
   @override
-  State<SelectCollegeScreen> createState() => _SelectCollegeScreenState();
+  State<SelectSubjectScreen> createState() => _SelectSubjectScreenState();
 }
 
-class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
+class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
   final db = FirebaseFirestore.instance;
-  static List<String> dbCollegeList = [];
+  static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
 
-  collectCollegeList() async {
-    dbCollegeList = [];
-    final collRef =
-        await db.collection("대학").doc(widget.schoolId).collection('단과대학').get();
-    for (var doc in collRef.docs) {
-      dbCollegeList.add(doc.id);
-    }
+  collectSubjectList() async {
+    lastRoute = widget.inputRoute + widget.subjectid;
+    print(lastRoute);
+    dbSubjectList = [];
+    final collRef = db.collection(widget.inputRoute).doc();
+    // for (var doc in collRef. {
+    //   dbSubjectList.add(doc.id);
+    // }
     setState(() {
-      displayList = List.from(dbCollegeList.toSet().toList());
-      lastRoute = '대학/${widget.schoolId}/단과대학/';
+      displayList = List.from(dbSubjectList.toSet().toList());
     });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    collectCollegeList();
-    super.initState();
   }
 
   @override
@@ -44,7 +37,7 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                collectCollegeList();
+                collectSubjectList();
               },
               icon: const Icon(Icons.tab))
         ],
@@ -58,17 +51,6 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
                 return Container(
                   color: Colors.amber,
                   child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectSubjectScreen(
-                            displayList[index],
-                            lastRoute,
-                          ),
-                        ),
-                      );
-                    },
                     //trailing: const Icon(Icons.hub_outlined),
                     title: Text(
                       displayList[index],
