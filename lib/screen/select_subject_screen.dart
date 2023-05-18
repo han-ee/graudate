@@ -19,14 +19,26 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
   collectSubjectList() async {
     lastRoute = widget.inputRoute + widget.subjectid;
     print(lastRoute);
+    print(widget.subjectid);
     dbSubjectList = [];
-    final collRef = db.collection(widget.inputRoute).doc();
-    // for (var doc in collRef. {
-    //   dbSubjectList.add(doc.id);
-    // }
+    final collRef = await db.collection("$lastRoute/학과").get();
+    print(collRef.docs);
+    for (var doc in collRef.docs) {
+      print(doc.id);
+      dbSubjectList.add(doc.id);
+    }
+    print(dbSubjectList);
     setState(() {
       displayList = List.from(dbSubjectList.toSet().toList());
+      lastRoute = lastRoute;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    collectSubjectList();
+    super.initState();
   }
 
   @override
