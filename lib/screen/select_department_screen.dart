@@ -1,33 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class SelectSubjectScreen extends StatefulWidget {
+class SelectDepartmentScreen extends StatefulWidget {
   final String subjectid;
   final String inputRoute;
-  const SelectSubjectScreen(this.subjectid, this.inputRoute, {super.key});
+  const SelectDepartmentScreen(this.subjectid, this.inputRoute, {super.key});
 
   @override
-  State<SelectSubjectScreen> createState() => _SelectSubjectScreenState();
+  State<SelectDepartmentScreen> createState() => _SelectDepartmentScreenState();
 }
 
-class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
+class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
   final db = FirebaseFirestore.instance;
   static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
 
-  collectSubjectList() async {
-    lastRoute = widget.inputRoute + widget.subjectid;
-    print(lastRoute);
-    print(widget.subjectid);
+  collectDepartmentList() async {
+    lastRoute = "${widget.inputRoute}${widget.subjectid}/학과";
     dbSubjectList = [];
-    final collRef = await db.collection("$lastRoute/학과").get();
-    print(collRef.docs);
+    final collRef = await db.collection(lastRoute).get();
     for (var doc in collRef.docs) {
-      print(doc.id);
       dbSubjectList.add(doc.id);
     }
-    print(dbSubjectList);
     setState(() {
       displayList = List.from(dbSubjectList.toSet().toList());
       lastRoute = lastRoute;
@@ -36,8 +31,7 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    collectSubjectList();
+    collectDepartmentList();
     super.initState();
   }
 
@@ -49,7 +43,7 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                collectSubjectList();
+                collectDepartmentList();
               },
               icon: const Icon(Icons.tab))
         ],
