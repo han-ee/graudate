@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SelectSubjectScreen extends StatefulWidget {
@@ -15,16 +16,49 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
   static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
+  bool isLiked = false;
+  List favorite = [];
+
+  getUserUid() {
+    try {
+      if (FirebaseAuth.instance.currentUser != null) {
+        return (FirebaseAuth.instance.currentUser?.uid)!;
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("user not found in");
+        return e.code.toString();
+      }
+    }
+  }
+
+  toggleFavorite(String value) async {
+    setState(() {
+      if (favorite.contains(value)) {
+        favorite.remove(value);
+      } else {
+        favorite.add(value);
+      }
+    });
+    late String docid;
+    String userUid = getUserUid();
+    final query =
+        await db.collection("학생").where("uuid", isEqualTo: userUid).get();
+    docid = query.docs.first.id;
+    await db.collection("학생").doc(docid).update({
+      "favorite": favorite.toSet().toList(),
+    });
+  }
 
   collectSubjectList() async {
     print("여기는 과목 선택 페이지");
     lastRoute = "${widget.inputRoute}/${widget.termid}";
-
     dbSubjectList = [];
     final collRef = db.collection(widget.inputRoute).doc(widget.termid);
-    collRef.get().then((value) async {
-      value.data();
-    });
+    final data = await collRef.get();
+    for (var subjectId in data.data()!.keys) {
+      dbSubjectList.add(subjectId);
+    }
     setState(() {
       displayList = List.from(dbSubjectList.toSet().toList());
       lastRoute = lastRoute;
@@ -43,16 +77,23 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("TestPage"),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.tab))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                print("눌렀음");
+                collectSubjectList();
+              },
+              icon: const Icon(Icons.tab))
+        ],
       ),
       body: displayList.isEmpty
           ? const Center(
-              child: Text("ㅁㄴㅇㅁㅇ"),
+              child: CircularProgressIndicator(),
             )
           : ListView.builder(
               itemBuilder: (BuildContext context, int index) {
+                final isLiked = favorite.contains(displayList[index]);
                 return Container(
-                  color: Colors.amber,
                   child: ListTile(
                     onTap: () {
                       // Navigator.push(
@@ -69,7 +110,34 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
                     title: Text(
                       displayList[index],
                     ),
-                    leading: const Icon(Icons.star, color: Colors.black),
+                    leading: IconButton(
+                      icon: isLiked
+                          ? const Icon(
+                              Icons.favorite_outlined,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_border_outlined,
+                              color: Colors.red,
+                            ),
+                      onPressed: () {
+                        toggleFavorite(displayList[index]);
+                      },
+                    ),
+                    // leading: IconButton(
+                    //   icon: isLiked
+                    //       ? const Icon(
+                    //           Icons.favorite_outlined,
+                    //           color: Colors.red,
+                    //         )
+                    //       : const Icon(
+                    //           Icons.favorite_border_outlined,
+                    //           color: Colors.red,
+                    //         ),
+                    //   onPressed: () {
+                    //     toggleFavorite(displayList[index]);
+                    //   },
+                    // ),
                     subtitle: const Text("subtitle"),
                   ),
                 );
