@@ -1,25 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grad_gg/screen/search_page/select_year_screen.dart';
+import 'package:grad_gg/screen/search_page/select_subject_screen.dart';
 
-class SelectDepartmentScreen extends StatefulWidget {
-  final String collegeid;
+class SelectTermScreen extends StatefulWidget {
+  final String subjectid;
   final String inputRoute;
-  const SelectDepartmentScreen(this.collegeid, this.inputRoute, {super.key});
+  const SelectTermScreen(this.subjectid, this.inputRoute, {super.key});
 
   @override
-  State<SelectDepartmentScreen> createState() => _SelectDepartmentScreenState();
+  State<SelectTermScreen> createState() => _SelectTermScreenState();
 }
 
-class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
+class _SelectTermScreenState extends State<SelectTermScreen> {
   final db = FirebaseFirestore.instance;
   static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
 
-  collectDepartmentList() async {
-    print("여기는 과 선택 페이지");
-    lastRoute = "${widget.inputRoute}${widget.collegeid}/학과";
+  collectTermList() async {
+    print("여기는 학기 선택 페이지");
+    lastRoute = "${widget.inputRoute}/${widget.subjectid}/학기";
+    print(lastRoute);
+
     dbSubjectList = [];
     final collRef = await db.collection(lastRoute).get();
     for (var doc in collRef.docs) {
@@ -33,7 +35,8 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
 
   @override
   void initState() {
-    collectDepartmentList();
+    // TODO: implement initState
+    collectTermList();
     super.initState();
   }
 
@@ -45,7 +48,7 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                collectDepartmentList();
+                collectTermList();
               },
               icon: const Icon(Icons.tab))
         ],
@@ -57,13 +60,12 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
           : ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: Colors.amber,
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SelectYearScreen(
+                          builder: (context) => SelectSubjectScreen(
                             displayList[index],
                             lastRoute,
                           ),
@@ -74,14 +76,7 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
                     title: Text(
                       displayList[index],
                     ),
-                    leading: IconButton(
-                      icon: const Icon(
-                        Icons.favorite_border_outlined,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {},
-                    ),
-                    subtitle: const Text("subtitle"),
+                    leading: const Icon(Icons.star),
                   ),
                 );
               },

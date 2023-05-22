@@ -1,23 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grad_gg/screen/search_page/select_term_screen.dart';
 
-class SelectSubjectScreen extends StatefulWidget {
+class SelectYearScreen extends StatefulWidget {
   final String departmentid;
   final String inputRoute;
-  const SelectSubjectScreen(this.departmentid, this.inputRoute, {super.key});
+  const SelectYearScreen(this.departmentid, this.inputRoute, {super.key});
 
   @override
-  State<SelectSubjectScreen> createState() => _SelectSubjectScreenState();
+  State<SelectYearScreen> createState() => _SelectYearScreenState();
 }
 
-class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
+class _SelectYearScreenState extends State<SelectYearScreen> {
   final db = FirebaseFirestore.instance;
   static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
 
   collectYearList() async {
-    lastRoute = "/${widget.inputRoute}/${widget.departmentid}/년도";
+    print("여기는 년도 선택 페이지");
+    lastRoute = "${widget.inputRoute}/${widget.departmentid}/년도";
 
     dbSubjectList = [];
     final collRef = await db.collection(lastRoute).get();
@@ -42,13 +44,7 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("TestPage"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                collectYearList();
-              },
-              icon: const Icon(Icons.tab))
-        ],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.tab))],
       ),
       body: displayList.isEmpty
           ? const Center(
@@ -59,6 +55,17 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
                 return Container(
                   color: Colors.amber,
                   child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectTermScreen(
+                            displayList[index],
+                            lastRoute,
+                          ),
+                        ),
+                      );
+                    },
                     //trailing: const Icon(Icons.hub_outlined),
                     title: Text(
                       displayList[index],
