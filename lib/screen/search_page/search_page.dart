@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grad_gg/model/search_model.dart';
-import 'package:grad_gg/screen/select_college_screen.dart';
+import 'package:grad_gg/screen/search_page/select_college_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -11,11 +10,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  static List<SearchModel> main_search_list = [
-    SearchModel('apple', 20),
-    SearchModel("banana", 20),
-  ];
-
   final _searchController = TextEditingController();
   final db = FirebaseFirestore.instance;
   static List<String> dbSchoolList = [];

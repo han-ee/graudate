@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:grad_gg/screen/select_department_screen.dart';
+import 'package:grad_gg/screen/search_page/select_department_screen.dart';
 
 class SelectCollegeScreen extends StatefulWidget {
   final String schoolId;
@@ -55,10 +55,10 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
     });
     late String docid;
     String userUid = getUserUid();
-    final query =
-        await db.collection("학생").where("uuid", isEqualTo: userUid).get();
-    docid = query.docs.first.id;
-    await db.collection("학생").doc(docid).update({
+    // final query =
+    //     await db.collection("학생").where("uuid", isEqualTo: userUid).get();
+    // docid = query.docs.first.id;
+    await db.collection("학생").doc(userUid).update({
       "favorite": favorite.toSet().toList(),
     });
   }
@@ -66,14 +66,23 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
   initFavorite() async {
     late String docid;
     String userUid = getUserUid();
-    final query =
-        await db.collection("학생").where("uuid", isEqualTo: userUid).get();
-    docid = query.docs.first.id;
-    final data = await db.collection("학생").doc(docid).get();
-
-    setState(() {
-      favorite = data['favorite'];
-    });
+    // final query =
+    //     await db.collection("학생").where("uuid", isEqualTo: userUid).get();
+    // docid = query.docs.first.id;
+    final data = await db.collection("학생").doc(userUid).get();
+    try {
+      if (data['favorite'].data() != null) {
+        setState(() {
+          favorite = data['favorite'];
+        });
+      }
+    } catch (e) {
+      await db.collection("학생").doc(userUid).update(
+        {
+          "favorite": [],
+        },
+      );
+    }
   }
 
   @override
@@ -105,7 +114,7 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
               itemBuilder: (BuildContext context, int index) {
                 final isLiked = favorite.contains(displayList[index]);
                 return Container(
-                  color: Colors.amber,
+                  // color: Colors.amber,
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -124,8 +133,14 @@ class _SelectCollegeScreenState extends State<SelectCollegeScreen> {
                     ),
                     leading: IconButton(
                       icon: isLiked
-                          ? const Icon(Icons.favorite_outlined)
-                          : const Icon(Icons.favorite_border_outlined),
+                          ? const Icon(
+                              Icons.favorite_outlined,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_border_outlined,
+                              color: Colors.red,
+                            ),
                       onPressed: () {
                         toggleFavorite(displayList[index]);
                       },

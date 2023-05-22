@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class SelectDepartmentScreen extends StatefulWidget {
-  final String subjectid;
+class SelectSubjectScreen extends StatefulWidget {
+  final String departmentid;
   final String inputRoute;
-  const SelectDepartmentScreen(this.subjectid, this.inputRoute, {super.key});
+  const SelectSubjectScreen(this.departmentid, this.inputRoute, {super.key});
 
   @override
-  State<SelectDepartmentScreen> createState() => _SelectDepartmentScreenState();
+  State<SelectSubjectScreen> createState() => _SelectSubjectScreenState();
 }
 
-class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
+class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
   final db = FirebaseFirestore.instance;
   static List<String> dbSubjectList = [];
   late List<String> displayList = [];
   late String lastRoute;
 
-  collectDepartmentList() async {
-    lastRoute = "${widget.inputRoute}${widget.subjectid}/학과";
+  collectYearList() async {
+    lastRoute = "/${widget.inputRoute}/${widget.departmentid}/년도";
+
     dbSubjectList = [];
     final collRef = await db.collection(lastRoute).get();
     for (var doc in collRef.docs) {
@@ -31,7 +32,8 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
 
   @override
   void initState() {
-    collectDepartmentList();
+    // TODO: implement initState
+    collectYearList();
     super.initState();
   }
 
@@ -43,7 +45,7 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                collectDepartmentList();
+                collectYearList();
               },
               icon: const Icon(Icons.tab))
         ],
@@ -61,12 +63,7 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
                     title: Text(
                       displayList[index],
                     ),
-                    leading: IconButton(
-                      icon: const Icon(Icons.favorite_border_outlined),
-                      onPressed: () {
-                        print("isPushed");
-                      },
-                    ),
+                    leading: const Icon(Icons.star, color: Colors.black),
                     subtitle: const Text("subtitle"),
                   ),
                 );

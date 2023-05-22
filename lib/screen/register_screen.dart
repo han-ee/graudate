@@ -86,7 +86,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       //getting userUid
       String userUid = getUserUid();
-
       // add user detail
       addUserDetails(
         _nameController.text.trim(),
@@ -95,7 +94,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         userUid.trim(),
       );
       print("계정등록 완료!");
-      _makeAccountState = false;
+      setState(() {
+        _makeAccountState = false;
+      });
       //const ProfileScreen();
     } else {
       alertDialog();
@@ -117,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future addUserDetails(
       String name, String email, String shcool, String userUid) async {
-    await FirebaseFirestore.instance.collection('학생').add({
+    await FirebaseFirestore.instance.collection('학생').doc(userUid).set({
       'name': name,
       'email': email,
       'school': shcool,
