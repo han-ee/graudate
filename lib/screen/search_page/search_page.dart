@@ -75,14 +75,13 @@ class _SearchScreenState extends State<SearchScreen> {
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         child: Column(
           children: [
-            Container(
-              color: Colors.orange,
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    '졸업.GG',
+                    'Grad.GG',
                     style: TextStyle(
                       //글자 스타일
                       color: Colors.black, //글자 색 설정

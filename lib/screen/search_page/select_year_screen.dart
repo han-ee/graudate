@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/screen/search_page/select_term_screen.dart';
+import 'package:like_button/like_button.dart';
 
 class SelectYearScreen extends StatefulWidget {
   final String departmentid;
@@ -53,7 +54,6 @@ class _SelectYearScreenState extends State<SelectYearScreen> {
           : ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: Colors.amber,
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -66,12 +66,13 @@ class _SelectYearScreenState extends State<SelectYearScreen> {
                         ),
                       );
                     },
+                    leading: const FittedBox(child: LikeButton()),
                     //trailing: const Icon(Icons.hub_outlined),
                     title: Text(
                       displayList[index],
                     ),
-                    leading: const Icon(Icons.star, color: Colors.black),
-                    subtitle: const Text("subtitle"),
+                    // leading: const Icon(Icons.star, color: Colors.black),
+                    // subtitle: const Text("subtitle"),
                   ),
                 );
               },

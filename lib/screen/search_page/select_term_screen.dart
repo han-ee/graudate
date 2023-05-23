@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grad_gg/screen/search_page/select_subject_screen.dart';
+import 'package:like_button/like_button.dart';
 
 class SelectTermScreen extends StatefulWidget {
   final String subjectid;
@@ -76,7 +77,9 @@ class _SelectTermScreenState extends State<SelectTermScreen> {
                     title: Text(
                       displayList[index],
                     ),
-                    leading: const Icon(Icons.star),
+                    leading: const FittedBox(
+                      child: LikeButton(),
+                    ),
                   ),
                 );
               },

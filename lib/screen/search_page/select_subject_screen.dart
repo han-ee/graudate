@@ -32,6 +32,28 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
     }
   }
 
+  initFavorite() async {
+    late String docid;
+    String userUid = getUserUid();
+    // final query =
+    //     await db.collection("학생").where("uuid", isEqualTo: userUid).get();
+    // docid = query.docs.first.id;
+    final data = await db.collection("학생").doc(userUid).get();
+    try {
+      if (data['favorite'] != null) {
+        setState(() {
+          favorite = data['favorite'];
+        });
+      }
+    } catch (e) {
+      await db.collection("학생").doc(userUid).update(
+        {
+          "favorite": [],
+        },
+      );
+    }
+  }
+
   toggleFavorite(String value) async {
     setState(() {
       if (favorite.contains(value)) {
@@ -68,6 +90,7 @@ class _SelectSubjectScreenState extends State<SelectSubjectScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    initFavorite();
     collectSubjectList();
     super.initState();
   }

@@ -57,7 +57,6 @@ class _SelectDepartmentScreenState extends State<SelectDepartmentScreen> {
           : ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: Colors.amber,
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
