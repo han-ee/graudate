@@ -1,6 +1,6 @@
 # grad_gg
 
-A new Flutter project.
+전공 커리큘럼 및 졸업 요건 제시 앱 프로젝트
 
 ## Getting Started
 
