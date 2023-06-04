@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "394119490779",
+    "project_id": "gnu-graduate-p1",
+    "storage_bucket": "gnu-graduate-p1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394119490779:android:851f2c1cccb6820c1cf0fe",
+        "android_client_info": {
+          "package_name": "com.example.grad_gg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394119490779-7da550s5b3he7vae1s7egh6ank86n17g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdv8DcClrE5zFGKoUEHTc9Qg_Hw_pQhe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394119490779-2i0d4rp4sa8esvf2d62k7urv92vgtnhu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
